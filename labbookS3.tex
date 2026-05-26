@@ -1,0 +1,303 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Do not alter this block (unless you're familiar with LaTeX)
+\documentclass{../labbook}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fill in the appropriate information below
+\lhead{Qiyan Huang}
+\rhead{Speech Synthesis I}
+\chead{\textbf{Lab Book S3. Due: \textbf{FRI 13.12.2024 23:59} CET}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\section{Lab Book S3}
+\noindent In this lab book you will work with the two tools, {MBROLA} diphone voices with front end realized by \textbf{eSpeak}:
+
+\noindent Dutoit, T., Pagel, V., Pierret, N., Bataille, F., \& Van der Vrecken, O. (1996, October). The MBROLA project: Towards a set of high quality speech synthesizers free of use for non commercial purposes. In Proceeding of Fourth International Conference on Spoken Language Processing. ICSLP'96 (Vol. 3, pp. 1393-1396). IEEE.
+
+\noindent \href{https://espeak.sourceforge.net/}{https://espeak.sourceforge.net/}
+
+
+\begin{problem}{2}{7}{Manually managing code-switching with eSpeak and MBROLA}
+\subsubsection*{Intro:}
+eSpeak is a compact open source software speech synthesizer for English and other languages, that uses a "formant synthesis" method. This allows many languages to be provided in a small size. 
+We will use eSpeak-NG, a fork of original eSpeak (and call it just "eSpeak" for brevity) as a front end for MBROLA diphone voices (which are cost-free but not open source). We will be working with the \texttt{us1} voice.
+
+\subsection*{Installing and trying out MBROLA and eSpeak}
+Both MBROLA and eSpeak-NG can be installed out of the box. For Debian-based Linuxes you can use 
+\begin{verbatim} 
+    apt install mbrola-us1
+    apt install espeak-ng
+\end{verbatim} (if you are using Google colab, prefix the shell commands with an exclamation mark, e.g. 
+\texttt{!apt install mbrola-us1}).
+\smallskip
+
+You can find different commands for eSpeak here: \href{https://espeak.sourceforge.net/commands.html}{https://espeak.sourceforge.net/commands.html}.
+For the following tasks we will need the transcription that eSpeak generates based on the available diphones for the US1 voice \footnote{There are problems with phoneme ``02'', equivalent to /\textipa{6}/ in “often” and “software” in MBROLA, based on the documentation there are at least 2 similar sounds you can consider instead: /\textipa{2}/ (MBROLA symbol “V”) as in “nut” (in the original MBROLA transcription this sound is used to synthesize the vowel in “of”), or /\textipa{A}/ (MBROLA symbol “A”) as in "Arthur"}. 
+Here are commands that we will use:
+\begin{itemize}
+    \item To examine a transcription you can call 
+        \begin{verbatim} 
+            espeak-ng -v mb-us1 -q --pho 'Hey! Enter your text here'
+        \end{verbatim} where 
+        \begin{itemize}
+            \item \texttt{-v mb-us1} asks to use the "us1" voice from mbrola
+            \item \texttt{-q} disables sound output
+            \item  \texttt{--pho} prints the transcription (in this case -- in mbrola format)
+        \end{itemize}
+                
+      
+      The transcription consists of multiple lines similar to \texttt{EI	60	 0 232 80 215 100 215}:
+      \begin{itemize}
+          \item \texttt{EI} is the phoneme to be generated
+          \item \texttt{60} is its duration (60ms)
+          \item the rest is a sequence of (time-F0) pairs, where time is in percents of the phoneme's duration. In this example, it starts with F0=232, changes to 215 at T=80\% (thus, 48ms) and then to 251 Hz at the end of the phoneme.
+      \end{itemize}
+
+    \item To save this transcription to a file "testmb":
+          \begin{verbatim}
+          espeak-ng -v mb-us1 -q --pho 'Hey there' > testmb  
+          \end{verbatim}
+    \item To synthesize speech based on the transcription in "testmb" file using          US1 voice and to write it into a "test.wav" file:
+          \begin{verbatim}
+           mbrola /usr/share/mbrola/us1/us1 testmb test.wav   
+          \end{verbatim}
+\end{itemize}
+    
+\subsubsection*{Task:}
+\noindent Here is a short text in English that uses Dutch names: 
+
+\textbf{\texttt{Characters from Dutch children's books - Jip and Janneke - has recently become part of an expression "jip-en-janneketaal" meaning "simple language" or layman's terms. It is most often used in context of politics and software engineering.}}
+\smallskip
+
+You will need to:
+\begin{itemize}
+    \item Transcribe the text with eSpeak.
+    \item Synthesize spoken version of this text using MBROLA's US1 voice.
+    \item Edit the transcription manually to adjust to pronunciation of Dutch words in English text so they will sound as Dutch as possible given the US1 set of diphones \footnote{"jip-en-janneketaal" in IPA is \textipa{[jIp En jAn@k@tA:l]}}.
+    \item Synthesize the spoken version of this text based on the adjusted transcription using MBROLA's US1 voice.
+    \item Reflect on the results.
+    \item Describe the steps you had to take: why you changed any of diphones (if any) and why you adjusted duration and pitch settings for certain diphones (if any). 
+\end{itemize}
+\subsection*{Submission}
+\noindent Alongside with this LaTeX file with your steps description and reflections, commit the adjusted transcription and the new voice sample(s).
+\end{problem}
+
+\begin{solution}
+\subsection*{Word Structure and Syllable Breakdown}
+The word \textit{jip-en-janneketaal} is a typical Dutch compound word and can be divided into the following parts:
+\begin{enumerate}
+    \item \textbf{jip:} A simple syllable with a closed syllable structure.
+    \item \textbf{en:} A conjunction meaning "and," functioning as an unstressed syllable.
+    \item \textbf{janneke:} A name pronunciation where the primary stress is on the first syllable.
+    \item \textbf{taal:} Meaning "language," characterized by a prominent long vowel.
+\end{enumerate}
+
+Dutch compound word pronunciation rules often emphasize clear syllable boundaries and enhance sentence prosody through contrasts between stressed and unstressed syllables. These features are reflected in the selection and adjustment of phonemes.
+
+\subsection*{Analysis of Each Phoneme and Reasons for Adjustments}
+
+\paragraph{1. jip}
+\begin{itemize}
+    \item \textbf{Phoneme Analysis:}
+        \begin{itemize}
+            \item \textbf{j:} A consonant, similar to the initial sound in the English word "yes," commonly found as a voiceless sound in Dutch.
+            \item \textbf{i:} A short vowel, appearing in closed syllables.
+            \item \textbf{p:} A voiceless bilabial stop consonant, crisp and brief.
+        \end{itemize}
+    \item \textbf{Reasons for Adjustments:}
+        \begin{itemize}
+            \item \textbf{Pitch:} Set to 200 Hz to maintain a natural tone and emphasize the importance of this monosyllable.
+            \item \textbf{Duration:} Set to 42 ms to reflect the rapid articulation characteristic of a short closed syllable.
+        \end{itemize}
+\end{itemize}
+
+\paragraph{2. en}
+\begin{itemize}
+    \item \textbf{Phoneme Analysis:}
+        \begin{itemize}
+            \item \textbf{@:} A neutral vowel commonly used in unstressed syllables in Dutch.
+            \item \textbf{n:} An alveolar nasal sound, articulated lightly and clearly.
+        \end{itemize}
+    \item \textbf{Reasons for Adjustments:}
+        \begin{itemize}
+            \item \textbf{Pitch:} Set to 195 Hz, slightly lower than the pitch for stressed syllables, to reflect the weakening of unstressed syllables.
+            \item \textbf{Duration:} Set to 24 ms to ensure rapid articulation for smooth sentence rhythm.
+        \end{itemize}
+\end{itemize}
+
+\paragraph{3. janneke}
+\begin{itemize}
+    \item \textbf{Phoneme Analysis:}
+        \begin{itemize}
+            \item \textbf{j:} A consonant, light and clear.
+            \item \textbf{A:} A vowel, prominently pronounced in stressed syllables.
+            \item \textbf{n:} A nasal sound.
+            \item \textbf{@:} A neutral vowel, commonly found in unstressed syllables.
+            \item \textbf{k:} A voiceless velar stop consonant with a clean articulation.
+            \item \textbf{@:} Another occurrence of the neutral vowel.
+        \end{itemize}
+    \item \textbf{Reasons for Adjustments:}
+        \begin{itemize}
+            \item \textbf{Pitch:} The pitch of the stressed vowel is increased to 210 Hz, while the pitch of the neutral vowels is lowered to 195 Hz to highlight the contrast between stressed and unstressed syllables.
+            \item \textbf{Duration:} The duration of the stressed vowel is increased to 39 ms, while the duration of the neutral vowels is shortened to 24 ms, enhancing the contrast between syllables.
+        \end{itemize}
+\end{itemize}
+
+\paragraph{4. taal}
+\begin{itemize}
+    \item \textbf{Phoneme Analysis:}
+        \begin{itemize}
+            \item \textbf{t:} A voiceless consonant with crisp articulation.
+            \item \textbf{a:} A long vowel, a prominent feature of Dutch.
+            \item \textbf{l:} A lateral sound, clear and sustained.
+        \end{itemize}
+    \item \textbf{Reasons for Adjustments:}
+        \begin{itemize}
+            \item \textbf{Pitch:} The pitch of the long vowel is set to 230 Hz to create a strong presence at the end of the sentence.
+            \item \textbf{Duration:} The duration of the long vowel is increased to 50 ms to highlight its length at the end of the word.
+        \end{itemize}
+\end{itemize}
+
+\subsection*{Specific Reasons for Adjusting Pitch and Duration}
+\begin{enumerate}
+    \item \textbf{Pitch Adjustments}
+        \begin{itemize}
+            \item \textbf{Stressed Syllables:} Stressed vowels have a higher pitch (210-230 Hz) to enhance their prominence.
+            \item \textbf{Unstressed Syllables:} Neutral vowels in unstressed syllables have a lower pitch (185-195 Hz) to reflect their weaker role and avoid overshadowing.
+        \end{itemize}
+    \item \textbf{Duration Adjustments}
+        \begin{itemize}
+            \item \textbf{Long Vowels:} Long vowels have a longer duration (50 ms), aligning with the characteristics of Dutch long vowels.
+            \item \textbf{Short Vowels and Consonants:} Short vowels and consonants have shorter durations (42-60 ms), resulting in more compact and natural articulation.
+        \end{itemize}
+\end{enumerate}
+\subsubsection*{Conclusion}
+\begin{enumerate}
+    \item \textbf{Changes in Phoneme Selection}
+    \begin{itemize}
+        \item \textbf{Original Version:}
+        \begin{itemize}
+            \item Used phonemes like \texttt{dZ} and \texttt{\{} that are not commonly found in Dutch or do not match the actual pronunciation of the target words (e.g., \textit{jip-en-janneketaal}).
+        \end{itemize}
+        \item \textbf{Modified Version:}
+        \begin{itemize}
+            \item Replaced with phonemes more in line with Dutch characteristics, such as:
+            \begin{itemize}
+                \item \texttt{j} for the initial sounds of \textit{jip} and \textit{janneke}.
+                \item \texttt{@} to represent the unstressed neutral vowel.
+                \item \texttt{A} and \texttt{t} for the ending sounds of \textit{taal}.
+            \end{itemize}
+            \item The phoneme selection better reflects Dutch pronunciation rules of the original words.
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Changes in Fundamental Frequency (F0)}
+    \begin{itemize}
+        \item \textbf{Original Version:}
+        \begin{itemize}
+            \item The F0 settings were relatively uniform, with most phonemes having an F0 value around 200 Hz.
+            \item Did not reflect Dutch prosodic features, such as higher F0 for stressed syllables and lower F0 for unstressed syllables.
+        \end{itemize}
+        \item \textbf{Modified Version:}
+        \begin{itemize}
+            \item F0 adjusted based on stress and prosody:
+            \begin{itemize}
+                \item \texttt{j} and \texttt{I} (from \textit{jip}): F0 set to 210 Hz, slightly higher to highlight stress.
+                \item Unstressed vowel \texttt{@}: F0 lowered to 195 Hz to emphasize its weakened characteristic.
+                \item Long vowel \texttt{A}: F0 increased to 230 Hz to highlight its prominence in sentence-final position.
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Changes in Duration}
+    \begin{itemize}
+        \item \textbf{Original Version:}
+        \begin{itemize}
+            \item Duration distribution was inconsistent, for example:
+            \begin{itemize}
+                \item \texttt{dZ} duration was 65 ms, while \texttt{I} was only 35 ms, lacking uniformity.
+                \item Minimal difference between long and short vowels in terms of duration.
+            \end{itemize}
+        \end{itemize}
+        \item \textbf{Modified Version:}
+        \begin{itemize}
+            \item Duration aligned with syllable characteristics:
+            \begin{itemize}
+                \item \texttt{p}: Shortened to 60 ms to reflect the fast articulation of closed syllables.
+                \item Long vowel \texttt{A}: Increased to 50 ms or longer to emphasize its length.
+                \item Unstressed vowel \texttt{@}: Reduced to 24 ms to reflect its brevity in unstressed syllables.
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+\end{solution}
+
+\begin{problem}{2}{3}{Automatic mapping of transcriptions}
+\subsubsection*{Task:}
+\noindent Imagine you have a Dutch transcription made for Dutch MBROLA voices. Unfortunately, the diphone database is no longer available for you, so you need to make an automatic mapping of Dutch eSpeak transcription to English eSpeak transcription so MBROLA can read it with US1 voice.
+\begin{itemize}
+    \item Take the following text "Ik wil wel graag werken aan dit project, maar ik weet niet of het gaat lukken. Ik zie veel beren op de weg."\footnote{Translation: "I would like to work on this project, but I don't know if it will work. I see bumps in the road ahead" (literal translation of "ik zie veel beren op de weg" is "I see a lot of bears on the road").}
+    \item To generate Dutch transcription, use \texttt{nl2} voice \footnote{Don't forget to install the \texttt{mbrola-nl2} package} (the \texttt{nl1} one seems to be broken).
+    \item Similar to the previous task, describe the steps you had to take: what are the changes you decided to introduce and why. 
+\end{itemize}
+
+\subsection*{Submission}
+\noindent Alongside with this LaTeX file with your reflections, commit the complete code you used, the transcriptions - original and resulting, and the voice sample that you get by using the new transcription. Don't forget to write clear comments in your code.
+\end{problem}
+
+\begin{solution}
+\subsubsection*{Steps Description}
+\begin{enumerate}
+    \item \textbf{Generate Dutch Transcription}
+    \begin{itemize}
+        \item Use the \texttt{espeak-ng} tool to transcribe the Dutch sentence 
+        \textit{"Ik wil wel graag werken aan dit project, maar ik weet niet of het gaat lukken. Ik zie veel beren op de weg."} into phonetic form using the \texttt{nl2} voice model and save it as a text file. This transcription file serves as the basis for subsequent phoneme mapping and speech synthesis.
+    \end{itemize}
+
+    \item \textbf{Verify the Generated Dutch Transcription}
+    \begin{itemize}
+        \item Print and inspect the contents of the generated Dutch transcription file to ensure the phonemes, durations, and pitch annotations are accurate. This step ensures the reliability of subsequent processing.
+    \end{itemize}
+
+    \item \textbf{Map Dutch Phonemes to English Phonemes}
+    \begin{itemize}
+        \item Use a predefined phoneme mapping table to map Dutch phonemes to English phonemes to make them compatible with the \texttt{nl2} voice model.
+        \item During the mapping process, pay special attention to long vowels, special phonemes, and intonation in Dutch to retain as much of its linguistic characteristics as possible.
+    \end{itemize}
+
+    \item \textbf{Save the Converted English Phoneme Transcription}
+    \begin{itemize}
+        \item Save the mapped English phonemes into a new text file to provide input for generating the audio file.
+    \end{itemize}
+
+    \item \textbf{Generate the Audio File}
+    \begin{itemize}
+        \item Use the adjusted English phoneme transcription file and the \texttt{mbrola} tool with the \texttt{nl2} voice model to generate the audio file.
+        \item The generated audio file uses the \texttt{nl2} voice model, making it sound closer to Dutch characteristics.
+    \end{itemize}
+
+    \item \textbf{Verify the Audio File}
+    \begin{itemize}
+        \item Play the generated audio file to check its coherence and naturalness. If necessary, further optimize the speech quality by adjusting the phoneme durations and pitch.
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection*{Changes Made and Their Reasons}
+\begin{enumerate}
+    \item \textbf{Phoneme Mapping}
+    \begin{itemize}
+        \item \textbf{Change}: Use a phoneme mapping table to replace Dutch phonemes with the closest English phonemes.
+        \item \textbf{Reason}: Dutch phonemes are not fully compatible with the \texttt{nl2} voice model, so mapping ensures the synthesized speech can be recognized and processed by the model.
+        \item \textbf{Reason}: Ensure that all phonemes are correctly mapped to avoid errors or omissions during speech synthesis.
+    \end{itemize}
+
+    \item \textbf{Speech Quality Validation}
+    \begin{itemize}
+        \item \textbf{Change}: Add debugging and validation steps after each stage, such as printing transcription text or playing the audio file.
+        \item \textbf{Reason}: Ensure the correctness of each generated output, providing reliable input for subsequent steps.
+    \end{itemize}
+\end{enumerate}
+\end{solution}
+
+\end{document}
